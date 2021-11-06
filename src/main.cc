@@ -17,20 +17,22 @@ string load_bpf(string path){
     std::string buffer(size, ' ');
     t.seekg(0);
     t.read(&buffer[0], size); 
-    return path;
+    return buffer;
 }
 
  
 int main(){
-    printf("BPF linked\n");
+    // printf("BPF linked\n");
     ebpf::BPF bpf;
     ebpf::StatusTuple res(0);
     string ip_ripper = load_bpf("/bpf/src/ip_ripper.bpf.c"); // super-hacky, but works for these docker builds.
     res = bpf.init(ip_ripper);
     assert(res.code() == 0);
     int prog_fd;
-    res = bpf.load_func("test", BPF_PROG_TYPE_CGROUP_SKB, prog_fd);
+    res = bpf.load_func("test", BPF_PROG_TYPE_SCHED_CLS, prog_fd);
     assert(res.code() == 0);
+    printf("Generate some traffic over SSH\n");
+    
     return 0;
 }
 

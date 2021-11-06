@@ -4,4 +4,4 @@ mkdir build
 cd build
 cmake ../src
 make
-bash
+./ip_ripper
