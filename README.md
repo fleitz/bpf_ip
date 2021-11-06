@@ -21,9 +21,12 @@
 # 2:22 AM there seems to be lots of complicated ways of calculating the offsets, lets just assume the packet starts at 0 and is an IP header.
 # 2:45 AM looking through the iproute2 sources it looks like BCC is massively overcomplicating things. Lets write raw BPF and compile with clang. Starting print_ip.bpf.c
 # 3:45 AM bcc is not designed to attach to 'tc', lets use the example program from tc and strace it to find out how it attaches to the kernel traffic controller. Also, XDP seems cool, it sounds like ebpf runs right on the network card / driver in some cases...
+# 4:15 AM tc sets up the ebpf fd via sendmsg/recvmsg, dive deeper into this later, abandon all hope of using BCC.
 # 4:49 AM copy a bunch of defines out of iproutes / bcc to get tcbpf-sample.bpf.c compiling, now it gets rejected by the verifier, checking if bpf_trace_printk is not allowed in classifiers? or maybe I'm using the wrong fmt.
-
-
+# 5:47 AM not allowed to use skb->local_ip4. Why have it and then reject it? kernel tests point to another method. apparently we are deep enough in the network stack that the ip headers are just part of the skb 'data'.
+# 6:03 AM didn't compile because I didn't check if the iphdr code returns null. errno seems so luxurious now.
+# 6:59 AM code is not outputting the expected hex, the kernel test code says it works and iphdr->daddr is almost always 0x0 which is likely a socket listening on 0.0.0.0 
+# 7:10 AM finish notes, ideas for making this go quicker, copy all the packet data into a ringbuf and feed it into libpcap / wireshark somehow. voila, universal network packet inspector... with a GUI even... does the same thing as tcpdump / old school bpf. maybe borrow the tcpdump code for writing pcap / pcap-ng format files?
 
 
 
