@@ -1,0 +1,10 @@
+version: "3"  # optional since v1.27.0
+services:
+  bpf:
+    build: .
+    cap_add:
+      - SYS_ADMIN
+    volumes:
+      - .:/bpf
+      - /lib/modules:/lib/modules
+      - /usr/src:/usr/src

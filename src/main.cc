@@ -18,7 +18,6 @@ string load_bpf(string path){
     t.seekg(0);
     t.read(&buffer[0], size); 
     return path;
-
 }
 
  
@@ -26,7 +25,7 @@ int main(){
     printf("BPF linked\n");
     ebpf::BPF bpf;
     ebpf::StatusTuple res(0);
-    string ip_ripper = load_bpf("ip_ripper.bpf.c");
+    string ip_ripper = load_bpf("/bpf/src/ip_ripper.bpf.c"); // super-hacky, but works for these docker builds.
     res = bpf.init(ip_ripper);
     assert(res.code() == 0);
     int prog_fd;
